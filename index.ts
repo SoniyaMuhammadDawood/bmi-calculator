@@ -1,12 +1,10 @@
-#!/usr/bin/env node 
+#!/usr/bin/env node
 import inquirer from "inquirer";
 import chalk from "chalk";
 
 console.log(chalk.bold.hex('#FFC0CB')
-
 ( `\n \t ▂▃▅▇█▓▒░ Welcome to the BMI Calculator!! ░▒▓█▇▅▃▂\n`
 ));
-
 console.log(chalk.bold.hex('#FFC0CB')( `=`.repeat(67), `\n`));
 
 interface Answer {
@@ -22,7 +20,7 @@ const main = async () => {
   const answer: Answer = await inquirer.prompt([
     {
       name: "height",
-      message: "Please enter your height in meters (e.g., 1.75)",
+      message: "Please enter your height in feet (e.g., 5.9)",
       type: "input",
       validate: (input) => {
         const value = parseFloat(input);
@@ -48,9 +46,17 @@ const main = async () => {
     },
   ]);
 
-  const height = parseFloat(answer.height);
-  const weight = parseFloat(answer.weight);
-  const bmi = BmiCalculator(height, weight);
+ const  heightInFeet = parseFloat(answer.height);
+ const weight = parseFloat(answer.weight); 
+
+  // convert height from feet to meters
+  const heightInMeters = heightInFeet * 0.3048;
+
+  const bmi = BmiCalculator(heightInMeters, weight);
+
+  // const height = parseFloat(answer.height);
+  // const weight = parseFloat(answer.weight);
+  // const bmi = BmiCalculator(height, weight);
 
   console.log(chalk.greenBright(`Your BMI is ${bmi.toFixed(2)}`));
 
@@ -60,8 +66,12 @@ const main = async () => {
     console.log(`You have a normal weight`);
   } else if (bmi >= 25 && bmi <= 29.9) {
     console.log(`You're overweight`);
+  } else if (bmi >= 30 && bmi <= 34.9) {
+    console.log(`You're in obesity class I`);
+  } else if (bmi >= 35 && bmi <= 39.9) {
+    console.log(`You're in obesity class II`);
   } else {
-    console.log(`You're obese`);
+    console.log(`You're in obesity class III`);
   }
 };
 
